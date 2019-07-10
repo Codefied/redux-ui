@@ -392,7 +392,8 @@ function ui(key) {
             // These actions are passed via react-redux connector
             setDefaultUI: _propTypes.func.isRequired,
             updateUI: _propTypes.func.isRequired,
-            massUpdateUI: _propTypes.func.isRequired }, _temp);
+            massUpdateUI: _propTypes.func.isRequired
+        }, _temp);
 
 
         UI.contextType = _ReduxUIStoreContext.ReduxUIStoreContext;
