@@ -123,7 +123,7 @@ function ui(key) {
             }
 
             _createClass(UI, [{
-                key: 'componentWillMount',
+                key: 'UNSAFE_componentWillMount',
 
 
                 // Pass these down in the new context created for this component
@@ -154,7 +154,7 @@ function ui(key) {
                 //     resetUI: func
                 // }
 
-                value: function componentWillMount() {
+                value: function UNSAFE_componentWillMount() {
                     // If the component's UI subtree doesn't exist and we have state to
                     // set ensure we update our global store with the current state.
                     if (this.props.ui.getIn(this.uiPath) === undefined && opts.state) {
@@ -170,8 +170,8 @@ function ui(key) {
                 // has blown away our state.
 
             }, {
-                key: 'componentWillReceiveProps',
-                value: function componentWillReceiveProps(nextProps) {
+                key: 'UNSAFE_componentWillReceiveProps',
+                value: function UNSAFE_componentWillReceiveProps(nextProps) {
                     // We can only see if this component's state is blown away by
                     // accessing the current global UI state; the parent will not
                     // necessarily always pass down child state.

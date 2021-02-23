@@ -121,7 +121,7 @@ export default function ui(key, opts = {}) {
             //     resetUI: func
             // }
 
-            componentWillMount() {
+            UNSAFE_componentWillMount() {
                 // If the component's UI subtree doesn't exist and we have state to
                 // set ensure we update our global store with the current state.
                 if (this.props.ui.getIn(this.uiPath) === undefined && opts.state) {
@@ -135,7 +135,7 @@ export default function ui(key, opts = {}) {
             //
             // We may need to restore default props for this component if a parent
             // has blown away our state.
-            componentWillReceiveProps(nextProps) {
+            UNSAFE_componentWillReceiveProps(nextProps) {
                 // We can only see if this component's state is blown away by
                 // accessing the current global UI state; the parent will not
                 // necessarily always pass down child state.
