@@ -5,10 +5,10 @@
  *
  * This checks to see whether state is an immutable map or a POJO.
  */
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.getUIState = void 0;
 var getUIState = exports.getUIState = function getUIState(state) {
   if (typeof state.get === 'function') {
     return state.get('ui');

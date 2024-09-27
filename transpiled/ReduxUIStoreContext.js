@@ -1,14 +1,9 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ReduxUIStoreContext = undefined;
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ReduxUIStoreContext = exports.ReduxUIStoreContext = _react2.default.createContext('store');
+exports.ReduxUIStoreContext = void 0;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
+var ReduxUIStoreContext = exports.ReduxUIStoreContext = /*#__PURE__*/_react["default"].createContext('store');

@@ -3,20 +3,21 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ReduxUIStoreContext = exports.reducer = undefined;
-
-var _ui = require('./ui');
-
-var _ui2 = _interopRequireDefault(_ui);
-
-var _actionReducer = require('./action-reducer');
-
-var _actionReducer2 = _interopRequireDefault(_actionReducer);
-
-var _ReduxUIStoreContext = require('./ReduxUIStoreContext');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _ui2.default;
-exports.reducer = _actionReducer2.default;
-exports.ReduxUIStoreContext = _ReduxUIStoreContext.ReduxUIStoreContext;
+Object.defineProperty(exports, "ReduxUIStoreContext", {
+  enumerable: true,
+  get: function get() {
+    return _ReduxUIStoreContext.ReduxUIStoreContext;
+  }
+});
+exports["default"] = void 0;
+Object.defineProperty(exports, "reducer", {
+  enumerable: true,
+  get: function get() {
+    return _actionReducer["default"];
+  }
+});
+var _ui = _interopRequireDefault(require("./ui"));
+var _actionReducer = _interopRequireDefault(require("./action-reducer"));
+var _ReduxUIStoreContext = require("./ReduxUIStoreContext");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
+var _default = exports["default"] = _ui["default"];
