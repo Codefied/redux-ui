@@ -5,9 +5,10 @@
  *
  * This checks to see whether state is an immutable map or a POJO.
  */
-export const getUIState = (state) => {
-  if (typeof state.get === 'function') {
+export const getUIState = (state: any): any => {
+  if (typeof state?.get === 'function') {
+    // Handle Immutable.js state (for backward compatibility with existing stores)
     return state.get('ui');
   }
-  return state.ui;
-}
+  return state?.ui;
+};
