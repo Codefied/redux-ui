@@ -5,7 +5,7 @@
   "main": "transpiled/index.js",
   "scripts": {
     "build": "babel src --out-dir transpiled --extensions '.ts,.tsx,.js,.jsx'",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "test": "mocha --compilers js:@babel/register --recursive --require ./test/setup.js"
   },
   "repository": {
