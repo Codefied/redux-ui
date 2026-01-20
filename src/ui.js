@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import invariant from 'invariant'
 import shallowCompare from 'react-pure-render/shallowEqual'
 import { updateUI, massUpdateUI, setDefaultUI, mountUI, unmountUI } from './action-reducer'
-import { ReduxUIStoreContext } from "./ReduxUIStoreContext"
+import { ReduxUIStoreContext } from "./context"
 
 import { getUIState } from './utils'
 
