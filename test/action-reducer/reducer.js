@@ -4,16 +4,19 @@ import {
   reducer,
   reducerEnhancer,
   UPDATE_UI_STATE
-} from '../../src/action-reducer.js';
+} from '../../src/action-reducer';
 
 import { assert } from 'chai';
-import { is, Map } from 'immutable';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { defaultState } from '../../src/action-reducer.js';
+import { defaultState } from '../../src/action-reducer';
+
+// Helper to deep compare plain objects
+const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 const customReducer = (state, action) => {
   if (action.type === 'CUSTOM_ACTION_TYPE') {
+    // Use compatibility shim method (deprecated but supported)
     return state.set('isHooked', true);
   }
   return state;
@@ -28,7 +31,7 @@ describe('reducerEnhancer', () => {
   });
 
   it('delegates to the default reducer', () => {
-    assert.isTrue(is(enhancedStore.getState().ui, defaultState));
+    assert(deepEqual(enhancedStore.getState().ui, defaultState));
 
     enhancedStore.dispatch({
       type: UPDATE_UI_STATE,
@@ -39,19 +42,15 @@ describe('reducerEnhancer', () => {
       }
     });
 
-    assert.isTrue(
-      is(
-        enhancedStore.getState().ui,
-        new Map({
-          __reducers: new Map(),
-          a: new Map({ foo: 'bar' })
-        })
-      )
-    );
+    const expected = {
+      __reducers: {},
+      a: { foo: 'bar' }
+    };
+    assert(deepEqual(enhancedStore.getState().ui, expected));
   });
 
   it('intercepts custom actions', () => {
-    assert.isTrue(is(enhancedStore.getState().ui, defaultState));
+    assert(deepEqual(enhancedStore.getState().ui, defaultState));
 
     enhancedStore.dispatch({
       type: 'CUSTOM_ACTION_TYPE',
@@ -59,19 +58,16 @@ describe('reducerEnhancer', () => {
         foo: 'bar'
       }
     });
-    assert.isTrue(
-      is(
-        enhancedStore.getState().ui,
-        new Map({
-          __reducers: new Map(),
-          isHooked: true
-        })
-      )
-    );
+
+    const expected = {
+      __reducers: {},
+      isHooked: true
+    };
+    assert(deepEqual(enhancedStore.getState().ui, expected));
   });
 
   it('update ui state by updater', () => {
-    assert.isTrue(is(enhancedStore.getState().ui, defaultState));
+    assert(deepEqual(enhancedStore.getState().ui, defaultState));
 
     enhancedStore.dispatch({
       type: UPDATE_UI_STATE,
@@ -91,14 +87,10 @@ describe('reducerEnhancer', () => {
       }
     });
 
-    assert.isTrue(
-      is(
-        enhancedStore.getState().ui,
-        new Map({
-          __reducers: new Map(),
-          foo: new Map({ bar: 'BAZ' })
-        })
-      )
-    );
+    const expected = {
+      __reducers: {},
+      foo: { bar: 'BAZ' }
+    };
+    assert(deepEqual(enhancedStore.getState().ui, expected));
   });
 });

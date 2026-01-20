@@ -1,5 +1,10 @@
 import { JSDOM } from 'jsdom'
 
+// Configure Babel to handle TypeScript files
+require('@babel/register')({
+  extensions: ['.js', '.jsx', '.ts', '.tsx']
+});
+
 const dom = new JSDOM('<!doctype html><html><body></body></html>', {
   url: 'http://localhost'
 })

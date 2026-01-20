@@ -5,8 +5,6 @@ import { assert } from 'chai';
 import React, { Component } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
-import { Map } from 'immutable';
-
 import ui, { reducer } from '../../src';
 import { render, renderAndFind } from '../utils/render.js';
 
@@ -34,7 +32,7 @@ describe('Default UI state variables', () => {
       const c = renderAndFind(<UITest passedProp='foo' />, Test);
       assert.equal(c.props.ui.calculated, 'foo');
       assert.equal(calcProps.passedProp, 'foo');
-      assert.equal(typeof calcState.ui, typeof Map());
+      assert.equal(typeof calcState.ui, 'object');
     });
 
   });
