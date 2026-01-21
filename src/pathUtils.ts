@@ -5,7 +5,7 @@
  * Similar to Immutable.js getIn().
  */
 export function getIn(obj: any, path: string[]): any {
-  if (!path || path.length === 0) {
+  if (!Array.isArray(path) || path.length === 0) {
     return obj;
   }
 

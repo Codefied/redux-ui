@@ -33,11 +33,13 @@ function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+// Maximum value for random key suffix (~1 billion, gives 8 hex chars)
+var MAX_RANDOM_KEY = 1 << 30;
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 function generateKey(WrappedComponent) {
-  return getDisplayName(WrappedComponent) + Math.floor(Math.random() * (1 << 30)).toString(16);
+  return getDisplayName(WrappedComponent) + Math.floor(Math.random() * MAX_RANDOM_KEY).toString(16);
 }
 function ui(keyOrOpts) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -142,6 +144,11 @@ function ui(keyOrOpts) {
         }
       }, [renderCount]);
 
+      // Store uiPath in ref to capture value for cleanup closure
+      // This prevents stale closure issues if uiPath were to change
+      var uiPathRef = (0, _react.useRef)(uiPath);
+      uiPathRef.current = uiPath;
+
       // Cleanup on unmount - use useLayoutEffect for synchronous cleanup
       // This matches the behavior of componentWillUnmount in class components
       (0, _react.useLayoutEffect)(function () {
@@ -151,13 +158,16 @@ function ui(keyOrOpts) {
             // Use requestAnimationFrame to avoid issues with @connect selectors
             if (typeof window !== 'undefined' && window.requestAnimationFrame) {
               window.requestAnimationFrame(function () {
-                dispatch((0, _actionReducer.unmountUI)(uiPath));
+                dispatch((0, _actionReducer.unmountUI)(uiPathRef.current));
               });
             } else {
-              dispatch((0, _actionReducer.unmountUI)(uiPath));
+              dispatch((0, _actionReducer.unmountUI)(uiPathRef.current));
             }
           }
         };
+        // Intentionally empty deps: cleanup runs only once on unmount.
+        // We use uiPathRef.current to always get the latest path value.
+        // dispatch is stable from useDispatch, opts.persist is captured at mount time.
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
@@ -217,6 +227,8 @@ function ui(keyOrOpts) {
         }
         previousMergedUI.current = result;
         return result;
+        // Deps intentionally exclude previousMergedUI (ref, always current) - we only
+        // want to recompute when the store changes (globalUI) or variable mappings change.
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [globalUI, uiVars, getLatestUI]);
 

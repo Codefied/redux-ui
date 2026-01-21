@@ -19,6 +19,14 @@ export {
 } from './action-reducer';
 
 export { ReduxUIStoreContext } from './context';
-export type { UIOptions, UIProps, UIState, UIContextValue } from './types';
+export type {
+  UIOptions,
+  UIProps,
+  UIState,
+  UIContextValue,
+  UpdateUIFunction,
+  CustomReducer,
+  ReducerEntry
+} from './types';
 
 export default ui;

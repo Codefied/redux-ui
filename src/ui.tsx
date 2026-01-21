@@ -21,6 +21,9 @@ import { getUIState } from './utils';
 import { getIn } from './pathUtils';
 import type { UIOptions, UIProps, UIContextValue, UpdateUIFunction } from './types';
 
+// Maximum value for random key suffix (~1 billion, gives 8 hex chars)
+const MAX_RANDOM_KEY = 1 << 30;
+
 function getDisplayName(WrappedComponent: ComponentType<any>): string {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
@@ -28,7 +31,7 @@ function getDisplayName(WrappedComponent: ComponentType<any>): string {
 function generateKey(WrappedComponent: ComponentType<any>): string {
   return (
     getDisplayName(WrappedComponent) +
-    Math.floor(Math.random() * (1 << 30)).toString(16)
+    Math.floor(Math.random() * MAX_RANDOM_KEY).toString(16)
   );
 }
 
@@ -130,6 +133,11 @@ export default function ui<S extends Record<string, any> = Record<string, any>>(
         }
       }, [renderCount]);
 
+      // Store uiPath in ref to capture value for cleanup closure
+      // This prevents stale closure issues if uiPath were to change
+      const uiPathRef = useRef(uiPath);
+      uiPathRef.current = uiPath;
+
       // Cleanup on unmount - use useLayoutEffect for synchronous cleanup
       // This matches the behavior of componentWillUnmount in class components
       useLayoutEffect(() => {
@@ -139,13 +147,16 @@ export default function ui<S extends Record<string, any> = Record<string, any>>(
             // Use requestAnimationFrame to avoid issues with @connect selectors
             if (typeof window !== 'undefined' && window.requestAnimationFrame) {
               window.requestAnimationFrame(() => {
-                dispatch(unmountUI(uiPath));
+                dispatch(unmountUI(uiPathRef.current));
               });
             } else {
-              dispatch(unmountUI(uiPath));
+              dispatch(unmountUI(uiPathRef.current));
             }
           }
         };
+      // Intentionally empty deps: cleanup runs only once on unmount.
+      // We use uiPathRef.current to always get the latest path value.
+      // dispatch is stable from useDispatch, opts.persist is captured at mount time.
       // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
@@ -216,6 +227,8 @@ export default function ui<S extends Record<string, any> = Record<string, any>>(
 
         previousMergedUI.current = result;
         return result;
+      // Deps intentionally exclude previousMergedUI (ref, always current) - we only
+      // want to recompute when the store changes (globalUI) or variable mappings change.
       // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [globalUI, uiVars, getLatestUI]);
 
