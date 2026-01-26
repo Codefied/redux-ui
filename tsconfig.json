@@ -7,7 +7,7 @@
     "declaration": true,
     "declarationDir": "./types",
     "outDir": "./transpiled",
-    "rootDir": "./src",
+    "rootDir": ".",
     "strict": false,
     "strictNullChecks": true,
     "noImplicitAny": false,
@@ -18,6 +18,6 @@
     "allowJs": true,
     "checkJs": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "transpiled", "test"]
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules", "transpiled"]
 }
