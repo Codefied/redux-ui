@@ -1,15 +1,13 @@
 'use strict';
 
 import {
-  reducer,
   reducerEnhancer,
-  UPDATE_UI_STATE
+  UPDATE_UI_STATE,
+  defaultState
 } from '../../src/action-reducer';
 
 import { assert } from 'chai';
-import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { defaultState } from '../../src/action-reducer';
 
 // Helper to deep compare plain objects
 const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
