@@ -1,4 +1,3 @@
-// src/types.ts
 export interface UIState {
   __reducers: Record<string, ReducerEntry>;
   [key: string]: any;

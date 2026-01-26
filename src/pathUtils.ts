@@ -1,9 +1,3 @@
-// src/pathUtils.ts
-
-/**
- * Get a deeply nested value from an object by path.
- * Similar to Immutable.js getIn().
- */
 export function getIn(obj: any, path: string[]): any {
   if (!Array.isArray(path) || path.length === 0) {
     return obj;
@@ -19,10 +13,6 @@ export function getIn(obj: any, path: string[]): any {
   return current;
 }
 
-/**
- * Set a deeply nested value in an object by path, returning a new object.
- * Similar to Immutable.js setIn().
- */
 export function setIn<T>(obj: T, path: string[], value: any): T {
   if (!path || path.length === 0) {
     return value;
@@ -46,10 +36,6 @@ export function setIn<T>(obj: T, path: string[], value: any): T {
   } as T;
 }
 
-/**
- * Delete a deeply nested value from an object by path, returning a new object.
- * Similar to Immutable.js deleteIn().
- */
 export function deleteIn<T>(obj: T, path: string[]): T {
   if (!path || path.length === 0 || obj === null || obj === undefined) {
     return obj;

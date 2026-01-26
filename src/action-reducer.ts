@@ -1,6 +1,3 @@
-// src/action-reducer.ts
-'use strict';
-
 import invariant from 'invariant';
 import { getIn, setIn, deleteIn } from './pathUtils';
 import { createCompatibleState, unwrapState } from './compat';
@@ -82,7 +79,6 @@ export default function reducer(state: UIState = defaultState, action: any): UIS
     }
   }
 
-  // Run custom reducers
   const customReducers = state.__reducers;
   if (customReducers && Object.keys(customReducers).length > 0) {
     for (const reducerKey of Object.keys(customReducers)) {

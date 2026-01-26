@@ -1,7 +1,5 @@
-// src/compat.ts
 import { getIn, setIn } from './pathUtils';
 
-// Track which deprecation warnings have been shown
 const shownWarnings = new Set<string>();
 
 function warnOnce(method: string, message: string): void {
@@ -83,14 +81,9 @@ export function createCompatibleState<T extends Record<string, any>>(
     }
   };
 
-  // Return object that has both the plain state properties and compat methods
   return Object.assign({}, plainState, compatMethods);
 }
 
-/**
- * Unwrap a potentially compatible state back to a plain object.
- * Handles both CompatibleState and plain objects.
- */
 export function unwrapState<T extends Record<string, any>>(
   state: T | CompatibleState<T>
 ): T {
@@ -101,9 +94,6 @@ export function unwrapState<T extends Record<string, any>>(
   return state as T;
 }
 
-/**
- * Reset deprecation warnings (useful for testing)
- */
 export function resetWarnings(): void {
   shownWarnings.clear();
 }

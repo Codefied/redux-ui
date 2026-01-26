@@ -1,11 +1,8 @@
-'use strict';
-
 import ui from './ui';
 
 // Re-export everything from action-reducer for backward compatibility
 export {
   default as reducer,
-  // Export action creators and types for advanced usage
   updateUI,
   massUpdateUI,
   setDefaultUI,
