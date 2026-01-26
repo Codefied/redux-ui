@@ -8,7 +8,7 @@ import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 
 import ui, { reducer } from '../../src';
-import { store, render, renderAndFind } from '../utils/render.js';
+import { store, render, renderAndFind } from '../utils/render';
 
 describe('with a custom reducer', () => {
 

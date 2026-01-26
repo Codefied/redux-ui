@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 import ui, { reducer } from '../../src';
-import { render, renderAndFind } from '../utils/render.js';
+import { render, renderAndFind } from '../utils/render';
 
 describe('Default UI state variables', () => {
 

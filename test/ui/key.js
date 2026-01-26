@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 
 import ui, { reducer } from '../../src';
-import { render, renderAndFind } from '../utils/render.js';
+import { render, renderAndFind } from '../utils/render';
 
 describe('key generation', () => {
 
