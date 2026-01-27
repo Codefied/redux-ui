@@ -1,10 +1,5 @@
-'use strict';
+"use strict";
 
-/**
- * getUIState inspects redux' global state store and returns the UI state node.
- *
- * This checks to see whether state is an immutable map or a POJO.
- */
 Object.defineProperty(exports, "__esModule", {
   value: true
 });

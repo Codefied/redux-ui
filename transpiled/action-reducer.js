@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 Object.defineProperty(exports, "__esModule", {
@@ -103,8 +103,6 @@ function reducer() {
         break;
       }
   }
-
-  // Run custom reducers
   var customReducers = state.__reducers;
   if (customReducers && Object.keys(customReducers).length > 0) {
     for (var _i2 = 0, _Object$keys2 = Object.keys(customReducers); _i2 < _Object$keys2.length; _i2++) {

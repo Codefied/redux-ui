@@ -1,5 +1,4 @@
-// src/ui.tsx
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -8,7 +7,6 @@ exports["default"] = ui;
 var _react = _interopRequireWildcard(require("react"));
 var _reactRedux = require("react-redux");
 var _invariant = _interopRequireDefault(require("invariant"));
-var _shallowEqual = _interopRequireDefault(require("react-redux/lib/utils/shallowEqual"));
 var _actionReducer = require("./action-reducer");
 var _context = require("./context");
 var _utils = require("./utils");
@@ -43,7 +41,6 @@ function generateKey(WrappedComponent) {
 }
 function ui(keyOrOpts) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  // Normalize arguments (support both ui('key') and ui({ key, state }))
   if (_typeof(keyOrOpts) === 'object') {
     opts = keyOrOpts;
   } else if (typeof keyOrOpts === 'string') {
@@ -58,30 +55,21 @@ function ui(keyOrOpts) {
       var dispatch = (0, _reactRedux.useDispatch)();
       var store = (0, _reactRedux.useStore)();
 
-      // We read directly from store.getState() to get the latest state,
-      // similar to how the original class component did it in mergeUIProps()
-      // This avoids timing issues with useSelector on first render
+      // Read directly from store to avoid timing issues with useSelector on first render
       var getLatestUI = (0, _react.useCallback)(function () {
         return (0, _utils.getUIState)(store.getState());
       }, [store]);
-
-      // Generate stable key (once per component instance)
-      // Must happen before any other state/ref initialization
       var componentKeyRef = (0, _react.useRef)(null);
       if (componentKeyRef.current === null) {
         var _opts$key;
         componentKeyRef.current = (_opts$key = opts.key) !== null && _opts$key !== void 0 ? _opts$key : generateKey(WrappedComponent);
       }
       var componentKey = componentKeyRef.current;
-
-      // Calculate paths based on parent context
-      // This must use parentContext from the current render
       var parentPath = (_parentContext$uiPath = parentContext === null || parentContext === void 0 ? void 0 : parentContext.uiPath) !== null && _parentContext$uiPath !== void 0 ? _parentContext$uiPath : [];
       var uiPath = (0, _react.useMemo)(function () {
         return [].concat(_toConsumableArray(parentPath), [componentKey]);
       }, [parentPath.join('.'), componentKey]);
 
-      // Build uiVars map (which context owns which variables)
       // Child's local vars override parent's vars with the same name
       var uiVars = (0, _react.useMemo)(function () {
         var _parentContext$uiVars, _opts$state;
@@ -94,8 +82,6 @@ function ui(keyOrOpts) {
         }
         return _objectSpread(_objectSpread({}, parentVars), localVars);
       }, [parentContext === null || parentContext === void 0 ? void 0 : parentContext.uiVars, uiPath]);
-
-      // Evaluate default state (handles function values)
       var evaluateDefaults = (0, _react.useCallback)(function (stateConfig, currentProps) {
         var result = {};
         var globalState = store.getState();
@@ -111,12 +97,8 @@ function ui(keyOrOpts) {
         }
         return result;
       }, [store]);
-
-      // Track initialization
       var isInitializedRef = (0, _react.useRef)(false);
       var isMountedRef = (0, _react.useRef)(true);
-
-      // Force update mechanism
       var _useState = (0, _react.useState)(0),
         _useState2 = _slicedToArray(_useState, 2),
         renderCount = _useState2[0],
@@ -131,8 +113,6 @@ function ui(keyOrOpts) {
         var currentState = (0, _pathUtils.getIn)(currentUI, uiPath);
         if (currentState === undefined && opts.state) {
           var defaults = evaluateDefaults(opts.state, props);
-          // Dispatch synchronously during render
-          // This is safe because we only do it once (guarded by isInitializedRef)
           store.dispatch((0, _actionReducer.mountUI)(uiPath, defaults, opts.reducer));
         }
       }
@@ -148,14 +128,11 @@ function ui(keyOrOpts) {
       // This prevents stale closure issues if uiPath were to change
       var uiPathRef = (0, _react.useRef)(uiPath);
       uiPathRef.current = uiPath;
-
-      // Cleanup on unmount - use useLayoutEffect for synchronous cleanup
-      // This matches the behavior of componentWillUnmount in class components
       (0, _react.useLayoutEffect)(function () {
         return function () {
           isMountedRef.current = false;
           if (opts.persist !== true) {
-            // Use requestAnimationFrame to avoid issues with @connect selectors
+            // requestAnimationFrame avoids issues with @connect selectors during unmount
             if (typeof window !== 'undefined' && window.requestAnimationFrame) {
               window.requestAnimationFrame(function () {
                 dispatch((0, _actionReducer.unmountUI)(uiPathRef.current));
@@ -170,13 +147,9 @@ function ui(keyOrOpts) {
         // dispatch is stable from useDispatch, opts.persist is captured at mount time.
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
-
-      // Subscribe to store for re-renders (this triggers re-render when store updates)
       var globalUI = (0, _reactRedux.useSelector)(_utils.getUIState);
 
-      // Handle parent reset (when parent blows away our state)
-      // We need to restore defaults if our state is undefined but we have default state
-      // This handles the case when a parent calls resetUI and blows away child state
+      // Restore defaults when parent's resetUI blows away our state
       var prevStateRef = (0, _react.useRef)(undefined);
       (0, _react.useLayoutEffect)(function () {
         var latestState = (0, _pathUtils.getIn)(getLatestUI(), uiPath);
@@ -186,11 +159,8 @@ function ui(keyOrOpts) {
         }
         prevStateRef.current = latestState;
       });
-
-      // updateUI callback
       var updateUICallback = (0, _react.useCallback)(function (nameOrUpdates, value) {
         if (_typeof(nameOrUpdates) === 'object' && value === undefined) {
-          // Mass update
           dispatch((0, _actionReducer.massUpdateUI)(uiVars, nameOrUpdates));
           return;
         }
@@ -199,17 +169,12 @@ function ui(keyOrOpts) {
         (0, _invariant["default"])(uiVarPath, "The '".concat(name, "' UI variable is not defined in the UI context in \"") + getDisplayName(WrappedComponent) + '" ' + 'or any parent UI context. Set this variable using the "state" ' + 'option in the @ui decorator before using it.');
         dispatch((0, _actionReducer.updateUI)(uiVarPath, name, value));
       }, [uiVars, dispatch]);
-
-      // resetUI callback
       var resetUI = (0, _react.useCallback)(function () {
         if (opts.state) {
           var _defaults2 = evaluateDefaults(opts.state, props);
           dispatch((0, _actionReducer.setDefaultUI)(uiPath, _defaults2));
         }
       }, [uiPath, dispatch, evaluateDefaults, props]);
-
-      // Merge UI props from all scopes
-      // Read directly from store to get the absolute latest state (same as original)
       var previousMergedUI = (0, _react.useRef)({});
       var mergedUI = (0, _react.useMemo)(function () {
         var ui = getLatestUI();
@@ -220,9 +185,7 @@ function ui(keyOrOpts) {
             varPath = _Object$entries2$_i[1];
           result[varName] = (0, _pathUtils.getIn)(ui, [].concat(_toConsumableArray(varPath), [varName]));
         }
-
-        // Use previous result if shallowly equal (prevents unnecessary re-renders)
-        if ((0, _shallowEqual["default"])(previousMergedUI.current, result)) {
+        if ((0, _reactRedux.shallowEqual)(previousMergedUI.current, result)) {
           return previousMergedUI.current;
         }
         previousMergedUI.current = result;
@@ -231,8 +194,6 @@ function ui(keyOrOpts) {
         // want to recompute when the store changes (globalUI) or variable mappings change.
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [globalUI, uiVars, getLatestUI]);
-
-      // Context value for children
       var contextValue = (0, _react.useMemo)(function () {
         return {
           uiKey: componentKey,
