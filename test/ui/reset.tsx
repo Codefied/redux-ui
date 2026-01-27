@@ -6,14 +6,15 @@ import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 
 import ui, { reducer } from '../../src';
+import { UIProps } from '../../src/types';
 import { render, renderAndFind } from '../utils/render';
 
 describe('resetting UI state', () => {
-  class Parent extends Component {
+  class Parent extends Component<UIProps & { children?: React.ReactNode }> {
     render = () => (<div>{ this.props.children }</div>)
   }
 
-  class Child extends Component {
+  class Child extends Component<UIProps & { value?: string }> {
     render = () => <p>Child</p>
   }
 
