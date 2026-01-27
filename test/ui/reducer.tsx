@@ -9,10 +9,11 @@ import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 
 import ui, { reducer } from '../../src';
 import { store, render, renderAndFind } from '../utils/render';
+import { UIProps } from '../../src/types';
 
 describe('with a custom reducer', () => {
 
-  class Parent extends Component {
+  class Parent extends Component<UIProps & { children?: React.ReactNode }> {
     render = () => <div>{ this.props.children }</div>
   }
 
@@ -84,7 +85,7 @@ describe('with a custom reducer', () => {
       }
       return state;
     };
-    class Child extends Component {
+    class Child extends Component<UIProps> {
       render = () => <p>child</p>
     }
     const UIChild = ui({
