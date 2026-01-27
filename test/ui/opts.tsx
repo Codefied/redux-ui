@@ -7,9 +7,10 @@ import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 
 import ui, { reducer } from '../../src';
 import { render, renderAndFind } from '../utils/render';
+import { UIProps } from '../../src/types';
 
 describe('@connect options', () => {
-  class Child extends Component {
+  class Child extends Component<UIProps> {
     render = () => <p>Child</p>
   }
 
