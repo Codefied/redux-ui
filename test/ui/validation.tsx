@@ -6,10 +6,11 @@ import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 
 import ui, { reducer } from '../../src';
+import { UIProps } from '../../src/types';
 import { render, renderAndFind } from '../utils/render';
 
 describe('Prop validation', () => {
-  class Child extends Component {
+  class Child extends Component<UIProps> {
     render = () => <p>Child</p>
   }
   const UIChild = ui({ state: { name: 'child' } })(Child);
