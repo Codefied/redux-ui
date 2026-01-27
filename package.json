@@ -6,7 +6,7 @@
   "scripts": {
     "build": "babel src --out-dir transpiled --extensions '.ts,.tsx,.js,.jsx'",
     "prepare": "npm run build",
-    "test": "mocha --require ./test/babel-register.js --recursive --require ./test/setup.ts"
+    "test": "mocha --require ./test/babel-register.js --recursive --require ./test/setup.ts 'test/**/*.js' 'test/**/*.ts' 'test/**/*.tsx'"
   },
   "repository": {
     "type": "git",
