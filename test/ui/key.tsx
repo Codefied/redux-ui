@@ -5,11 +5,12 @@ import React, { Component } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 
 import ui, { reducer } from '../../src';
+import { UIProps } from '../../src/types';
 import { render, renderAndFind } from '../utils/render';
 
 describe('key generation', () => {
 
-  class Test extends Component {
+  class Test extends Component<UIProps> {
     render() { return <p>Hi</p>; }
   }
   const testKey = 'testKey'
