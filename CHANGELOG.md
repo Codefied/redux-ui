@@ -1,3 +1,28 @@
+# v2.0.0
+
+## Breaking Changes
+- **Minimum React version**: Now requires React 17.0.0+ (React 18 supported)
+- **Immutable.js removed**: UI state is now plain JavaScript objects
+
+## Major Changes
+- **Complete rewrite to React hooks**: Functional components with `useContext`, `useMemo`, `useCallback`, `useLayoutEffect`, `useSelector`, `useDispatch`
+- **TypeScript support**: Source code is TypeScript with exported type definitions
+- **Improved performance**: Memoization for stable references
+
+## Backward Compatibility
+- Public API unchanged: `@ui()` decorator works identically
+- Props unchanged: `ui`, `updateUI`, `resetUI`, `uiKey`, `uiPath`
+- Compatibility shim: Custom reducers using `state.set()`, `state.get()` still work (with deprecation warnings)
+
+## Migration for Custom Reducers
+```js
+// Before (deprecated)
+reducer: (state, action) => state.set('error', action.error)
+
+// After (recommended)
+reducer: (state, action) => ({ ...state, error: action.error })
+```
+
 # v0.2.0
 
 - Update Babel to v7
