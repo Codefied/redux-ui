@@ -6,12 +6,13 @@ import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 
 import ui, { reducer } from '../../src';
-import { render, renderAndFind } from '../utils/render.js';
+import { UIProps } from '../../src/types';
+import { render, renderAndFind } from '../utils/render';
 
 describe('UI state context', () => {
 
   describe('single component tree', () => {
-    class Test extends Component {
+    class Test extends Component<UIProps> {
       updateName() { this.props.updateUI('name', 'test'); }
       massUpdate() {
         this.props.updateUI({
@@ -55,13 +56,13 @@ describe('UI state context', () => {
     const uiState = {
       name: 'parent'
     };
-    class Parent extends Component {
+    class Parent extends Component<UIProps & { children?: React.ReactNode }> {
       updateContext(to = 'parent') { this.props.updateUI('name', to); }
       render() { return <div>{ this.props.children }</div>; }
     };
     const UIParent = ui({state: uiState})(Parent);
 
-    class Child extends Component {
+    class Child extends Component<UIProps> {
       updateParentContext(to = 'parent') { this.props.updateUI('name', to); }
       updateName() { this.props.updateUI('name', 'bar'); }
       updateOwnState() { this.props.updateUI('child', 'foo'); }
@@ -136,7 +137,7 @@ describe('UI state context', () => {
     });
 
     describe('duplicating UI variable names across parent/child contexts', () => {
-      class Child extends Component {
+      class Child extends Component<UIProps> {
         updateChildContext(to = 'foo') { this.props.updateUI('name', to); }
         render() { return <div /> }
       }
@@ -177,11 +178,11 @@ describe('UI state context', () => {
   });
 
   describe('shared contexts', () => {
-    class Foo extends Component {
+    class Foo extends Component<UIProps> {
       updateContext(to = 'misc') { this.props.updateUI('name', to); }
       render = () => <div />
     }
-    class Bar extends Component {
+    class Bar extends Component<UIProps> {
       updateContext(to = 'misc') { this.props.updateUI('name', to); }
       render = () => <div />
     }

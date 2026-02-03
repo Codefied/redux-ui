@@ -5,19 +5,22 @@ import { assert } from 'chai';
 import React, { Component } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
-import { Map } from 'immutable';
-
 import ui, { reducer } from '../../src';
-import { render, renderAndFind } from '../utils/render.js';
+import { render, renderAndFind } from '../utils/render';
+import { UIProps } from '../../src/types';
 
 describe('Default UI state variables', () => {
 
   describe('HOC is passed props and state to calculate defaults', () => {
     // Set up closures which we can use to check that the uiState func is passed
     // expected props.
-    let calcProps, calcState;
+    let calcProps: any, calcState: any;
 
-    class Test extends Component {
+    interface TestProps extends UIProps {
+      passedProp?: string;
+    }
+
+    class Test extends Component<TestProps> {
       render() { return <p>Hi</p>; }
     }
     const uiState = {
@@ -34,7 +37,7 @@ describe('Default UI state variables', () => {
       const c = renderAndFind(<UITest passedProp='foo' />, Test);
       assert.equal(c.props.ui.calculated, 'foo');
       assert.equal(calcProps.passedProp, 'foo');
-      assert.equal(typeof calcState.ui, typeof Map());
+      assert.equal(typeof calcState.ui, 'object');
     });
 
   });

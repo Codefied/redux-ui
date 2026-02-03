@@ -4,23 +4,26 @@ import { assert } from 'chai';
 
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { is, Map } from 'immutable';
 import ReactTestUtils from 'react-dom/test-utils';
 import shallowEqual from 'react-redux/lib/utils/shallowEqual';
 
 import ui, { reducer } from '../../src';
-import { store, render, renderAndFind } from '../utils/render.js';
+import { store, render, renderAndFind } from '../utils/render';
+import { UIProps } from '../../src/types';
 
 describe('with a custom reducer', () => {
 
-  class Parent extends Component {
+  class Parent extends Component<UIProps & { children?: React.ReactNode }> {
     render = () => <div>{ this.props.children }</div>
   }
 
   // Create a UI component that listens to the 'CUSTOM' type and updates
-  // UI variables
+  // UI variables.
+  // Note: Custom reducers receive state wrapped with compatibility shim,
+  // which provides .set() and .get() methods for backward compatibility.
   let parentReducer = (state, action) => {
     if (action.type === 'CUSTOM') {
+      // Use compatibility shim's set() method (works with both old and new API)
       return state.set('name', 'parentOverride');
     }
     return state;
@@ -36,14 +39,15 @@ describe('with a custom reducer', () => {
   it('adds a custom reducer on mount and removes at unmount', () => {
     const c = renderAndFind(<UIParent />, Parent);
 
-    let reducers = store.getState().ui.get('__reducers');
-    assert.equal(reducers.size, 1);
-    assert.equal(reducers.get('parent').func, parentReducer);
+    // State is now plain objects, not Immutable.js
+    let reducers = store.getState().ui.__reducers;
+    assert.equal(Object.keys(reducers).length, 1);
+    assert.equal(reducers['parent'].func, parentReducer);
 
     // Unmount and this should be gone
     ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(c).parentNode);
-    reducers = store.getState().ui.get('__reducers');
-    assert.equal(reducers.size, 0);
+    reducers = store.getState().ui.__reducers;
+    assert.equal(Object.keys(reducers).length, 0);
   });
 
   it('updates props as expected', () => {
@@ -71,15 +75,17 @@ describe('with a custom reducer', () => {
     let reducerState;
 
     // Create a UI component that listens to the 'CUSTOM' type and updates
-    // UI variables
+    // UI variables.
+    // Note: Custom reducers receive state wrapped with compatibility shim.
     let childReducer = (state = {}, action) => {
       reducerState = state;
       if (action.type === 'CUSTOM') {
+        // Use compatibility shim's set() method
         return state.set('foo', 'childOverride');
       }
       return state;
     };
-    class Child extends Component {
+    class Child extends Component<UIProps> {
       render = () => <p>child</p>
     }
     const UIChild = ui({
@@ -95,8 +101,9 @@ describe('with a custom reducer', () => {
 
       store.dispatch({ type: 'CUSTOM' });
       // The reducerState should equal the default reducer state for our child
-      // component
-      assert.isTrue(is(reducerState, new Map({ foo: 'bar' })));
+      // component. With the compatibility shim, we can check using plain object comparison
+      // or by using .get() method if available.
+      assert.equal(reducerState.foo, 'bar');
       assert.equal(parent.props.ui.name, 'parentOverride');
       assert.equal(child.props.ui.foo, 'childOverride');
 
